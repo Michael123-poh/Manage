@@ -158,13 +158,19 @@ require('../views/template/navbar.php');
                         <i class="bi bi-credit-card me-2"></i>
                         Historique des paiements
                     </h5>
-                    <button class="btn btn-outline-primary btn-sm">
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalPaiement">
                         <i class="bi bi-plus"></i> Nouveau paiement
                     </button>
                 </div>
                 <div class="card-body">
                     <div class="payment-timeline">
+                        <!-- Faire un alert en bootstrap-->
+                        <?php if (isset($errorMessage)) { ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?= $errorMessage ?>
+                            </div>
                         <?php 
+                            }
                         // Affichage l'historique des transactions
                         if (empty($Y_executeHistoriqueTransaction)) {
                             echo "<div class='text-center text-muted'>Aucun paiement enregistré.</div>";
@@ -173,9 +179,9 @@ require('../views/template/navbar.php');
                         ?>
                         <div class="payment-item">
                             <div class="payment-date">
-                                <span class="day"><?= date('d', strtotime($paiement->dateCreateTransaction)) ?></span>
-                                <span class="month"><?= date('M', strtotime($paiement->dateCreateTransaction)) ?></span>
-                                <span class="year"><?= date('Y', strtotime($paiement->dateCreateTransaction)) ?></span>
+                                <span class="day"><?= date('d', strtotime($paiement->dateTransaction)) ?></span>
+                                <span class="month"><?= date('M', strtotime($paiement->dateTransaction)) ?></span>
+                                <span class="year"><?= date('Y', strtotime($paiement->dateTransaction)) ?></span>
                             </div>
                             <div class="payment-content">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -200,9 +206,9 @@ require('../views/template/navbar.php');
                         <?php } }else{?>
                         <div class="payment-item">
                             <div class="payment-date">
-                                <span class="day"><?= date('d', strtotime($Y_executeHistoriqueTransaction->dateCreateTransaction)) ?></span>
-                                <span class="month"><?= date('M', strtotime($Y_executeHistoriqueTransaction->dateCreateTransaction)) ?></span>
-                                <span class="year"><?= date('Y', strtotime($Y_executeHistoriqueTransaction->dateCreateTransaction)) ?></span>
+                                <span class="day"><?= date('d', strtotime($Y_executeHistoriqueTransaction->dateTransaction)) ?></span>
+                                <span class="month"><?= date('M', strtotime($Y_executeHistoriqueTransaction->dateTransaction)) ?></span>
+                                <span class="year"><?= date('Y', strtotime($Y_executeHistoriqueTransaction->dateTransaction)) ?></span>
                             </div>
                             <div class="payment-content">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -360,6 +366,43 @@ require('../views/template/navbar.php');
         </div>
     </div>
 </main>
+
+<!-- Modal Nouveau Paiement -->
+<div class="modal fade" id="modalPaiement" tabindex="-1" aria-labelledby="modalPaiementLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalPaiementLabel">Enregistrer un nouveau paiement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="montant" class="form-label">Montant</label>
+            <input type="number" class="form-control" id="montant" name="montant" required>
+          </div>
+          <div class="mb-3">
+            <label for="modePaiement" class="form-label">Mode de paiement</label>
+            <select class="form-select" id="modePaiement" name="modePaiement" required>
+              <option value="">Sélectionner</option>
+              <option value="Cash">Cash</option>
+              <option value="Virement">Virement bancaire</option>
+              <option value="Mobile">Mobile Money</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="dateVersement" class="form-label">Date du versement</label>
+            <input type="date" class="form-control" id="dateVersement" name="dateVersement" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" name="Enregistrer" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
