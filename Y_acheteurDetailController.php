@@ -62,5 +62,69 @@ if (isset($_POST['Enregistrer'])){
     }
 }
 
+// 7. Upload de la pièce d'identité
+if (isset($_POST['telecharger'])) {
+    extract($_POST);
+
+    // Declaration des variables
+    if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
+        $allowed = array("jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png");
+        $filename = $_FILES["photo"]["name"];
+        $filetype = $_FILES["photo"]["type"];
+        $filesize = $_FILES["photo"]["size"];        
+
+        // Vérification de l'extension du fichier
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if (!array_key_exists($ext, $allowed)) {
+            die("Erreur : Veuillez sélectionner un format de fichier valide.");
+        }
+
+        // Vérification de la taille du fichier - 5Mo maximum
+        $maxsize = 5 * 1024 * 1024; // 5 Mo
+        if ($filesize > $maxsize) {
+            die("Erreur : La taille du fichier est supérieure à la limite autorisée.");
+        }
+
+        // Vérification du type MIME du fichier
+        if (in_array($filetype, $allowed)) {
+            $newFilename = $telecharger . '.' . $ext;
+
+            // Vérification si le fichier existe déjà
+            if(file_exists("../images" . $newFilename)) {
+                echo $newFilename . " est déjà existant.";
+            } else {
+                // Déplacement du fichier vers le dossier images
+                move_uploaded_file($_FILES["photo"]["tmp_name"], "../images/" . $newFilename);
+                echo "Votre fichier a été téléchargé avec succès.".' noms:'.$newFilename;
+                    // Insertion dans la base de données
+                    // $Y_executeInsertPieceIdentite = F_executeRequeteSql('INSERT INTO piece_identite (idAcheteur, nomPieceIdentite, typePieceIdentite) VALUES (?, ?, ?)', 
+                    // [$Y_idAcheteur, $newFilename, $typePieceIdentite]);
+                $cheminPieceIdentite = "../images/".$numeroCNI .".jpg";
+            }
+        }
+    }else {
+       echo "Erreur : " . $_FILES["photo"]["error"];
+    }
+    // Redirection vers la page de détails de l'acheteur
+    header("Location: Y_acheteurDetailController.php?Y_idAcheteur=$Y_idAcheteur");
+    exit;
+}
+
+// 8. Afficher la pièce d'identité
+if (isset($_POST['numeroCNI'])) {
+    extract($_POST);
+    
+    // stocker le chemein de la pièce d'identité dans une variable
+    $_SESSION['cheminPieceIdentite'] = "../images/".$numeroCNI .".jpg";
+    header("Location: Y_acheteurDetailController.php?Y_idAcheteur=$Y_idAcheteur&voirPiece=1");
+    exit;
+
+}
+
+// 9. Recuperer ce chemin Vers l'Image de la pièce d'identité dans la session
+if (isset($_GET['voirPiece']) && isset($_SESSION['cheminPieceIdentite'])) {
+    $cheminPieceIdentite = $_SESSION['cheminPieceIdentite'];
+}
+
 require('../views/acheteur/acheteurDetails.php');
 ?>

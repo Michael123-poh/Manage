@@ -176,6 +176,8 @@ require('../views/template/navbar.php');
                             echo "<div class='text-center text-muted'>Aucun paiement enregistré.</div>";
                         }elseif (empty($Y_executeHistoriqueTransaction->idVersement)) {            
                             foreach ($Y_executeHistoriqueTransaction as $paiement) {
+                                $compte = 1;
+                                $compte += 1;
                         ?>
                         <div class="payment-item">
                             <div class="payment-date">
@@ -186,7 +188,7 @@ require('../views/template/navbar.php');
                             <div class="payment-content">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="mb-1">Paiement #1</h6>
+                                        <h6 class="mb-1">Paiement #<?= $compte ?></h6>
                                         <p class="mb-0 text-muted">
                                             <i class="bi bi-wallet2 me-1"></i>
                                             <?= $paiement->	modePaiement ?>
@@ -295,7 +297,7 @@ require('../views/template/navbar.php');
                             </div>
                             <div class="document-info">
                                 <h6>Contrat de vente</h6>
-                                <small class="text-muted">PDF • 2.3 MB</small>
+                                <small class="text-muted">PDF </small>
                             </div>
                             <div class="document-actions">
                                 <button class="btn btn-sm btn-outline-primary">
@@ -310,29 +312,36 @@ require('../views/template/navbar.php');
                             </div>
                             <div class="document-info">
                                 <h6>Pièce d'identité</h6>
-                                <small class="text-muted">JPG • 1.8 MB</small>
+                                <small class="text-muted">JPG</small>
                             </div>
                             <div class="document-actions">
-                                <button class="btn btn-sm btn-outline-primary">
+                                
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalPieceIdentite">
                                     <i class="bi bi-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="envoyerCNI();"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalVoirPieceIdentite">
+                                    voir
                                 </button>
                             </div>
                         </div>
                         
-                        <div class="document-item">
+                        <!-- <div class="document-item">
                             <div class="document-icon bg-success">
                                 <i class="bi bi-file-earmark-text text-white"></i>
                             </div>
                             <div class="document-info">
                                 <h6>Plan de situation</h6>
-                                <small class="text-muted">PDF • 1.2 MB</small>
+                                <small class="text-muted">PDF</small>
                             </div>
                             <div class="document-actions">
                                 <button class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-download"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -348,18 +357,19 @@ require('../views/template/navbar.php');
                             <i class="bi bi-cash me-2"></i>
                             Enregistrer un paiement
                         </button>
-                        <button class="btn btn-outline-primary">
+                        <button class="btn btn-outline-primary"
+                                onclick="window.location.href='tel:<?= $Y_executeAcheteurDetail->telephoneAcheteur ?>'">
                             <i class="bi bi-telephone me-2"></i>
                             Appeler le client
                         </button>
-                        <button class="btn btn-outline-success">
+                        <!-- <button class="btn btn-outline-success">
                             <i class="bi bi-envelope me-2"></i>
                             Envoyer un email
                         </button>
                         <button class="btn btn-outline-info">
                             <i class="bi bi-calendar-event me-2"></i>
                             Planifier RDV
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </div>
@@ -404,6 +414,67 @@ require('../views/template/navbar.php');
   </div>
 </div>
 
+<!-- Modal Uploader La Piece D'identite -->
+ <div class="modal fade" id="modalPieceIdentite" tabindex="-1" aria-labelledby="modalPieceIdentite" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPieceIdentiteLabel">Uploader la pièce d'identité</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" enctype="multipart/form-data">
+                    Sélectionnez une image :
+                    <input  type="file" name="photo" id="photo">
+                    <input class="bg-primary" type="submit" placeholder="Envoyer" value="<?= $Y_executeAcheteurDetail->numeroCNI ?>" name="telecharger">
+                </form>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ <!-- Modal Voir la Pièce d'identité -->
+<div class="modal fade" id="modalVoirPieceIdentite" tabindex="-1" aria-labelledby="modalVoirPieceIdentiteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVoirPieceIdentiteLabel">Pièce d'identité</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img src="<?= htmlspecialchars($cheminPieceIdentite) ?>" alt="Pièce d'identité" class="img-fluid rounded shadow">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Formulaire Caché Pour Envoyer les données-->
+<form id="formCNI" method="post" action="Y_acheteurDetailController.php?Y_idAcheteur=<?= $Y_idAcheteur ?>" style="display:none;">
+    <input type="hidden" name="numeroCNI" id="inputNumeroCNI" value="<?= htmlspecialchars($Y_executeAcheteurDetail->numeroCNI) ?>">
+</form>
+
+
+<script>
+    function envoyerCNI() {
+        document.getElementById('formCNI').submit();
+    }
+</script>
+
+
+
+
+<?php if (isset($cheminPieceIdentite)) : ?>
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        var myModal = new bootstrap.Modal(document.getElementById('modalVoirPieceIdentite'));
+        myModal.show();
+
+        document.getElementById('modalVoirPieceIdentite').addEventListener('hidden.bs.modal', function () {
+            fetch('Y_detruireChemin.php', {method: 'POST'});
+        });
+    });
+</script>
+<?php endif; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
