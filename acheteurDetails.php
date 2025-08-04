@@ -1,13 +1,13 @@
 <?php
-require('../views/template/header.php');
-require('../views/template/navbar.php');
+    require('../views/template/header.php');
+    require('../views/template/navbar.php');
 ?>
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
     <!-- Header with navigation -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class="d-flex align-items-center">
-            <a href="acheteurView.php" class="btn btn-outline-secondary me-3">
+            <a href="../controller/Y_acheteurController.php<?='?H_idEmploye='.$_SESSION['H_idEmploye']?>" class="btn btn-outline-secondary me-3">
                 <i class="bi bi-arrow-left"></i> Retour
             </a>
             <div>
@@ -449,7 +449,7 @@ require('../views/template/navbar.php');
 </div>
 
 <!-- Formulaire Caché Pour Envoyer les données-->
-<form id="formCNI" method="post" action="Y_acheteurDetailController.php?Y_idAcheteur=<?= $Y_idAcheteur ?>" style="display:none;">
+<form id="formCNI" method="post" action="Y_acheteurDetailController.php<?='?H_idEmploye='.$_SESSION['H_idEmploye']?><?='&Y_idAcheteur='.$Y_idAcheteur ?>" style="display:none;">
     <input type="hidden" name="numeroCNI" id="inputNumeroCNI" value="<?= htmlspecialchars($Y_executeAcheteurDetail->numeroCNI) ?>">
 </form>
 

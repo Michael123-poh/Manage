@@ -15,7 +15,7 @@ $Y_idAcheteur = $_GET['Y_idAcheteur'];
 // 2. Selection des details des acheteurs
 $Y_executeAcheteurDetail = F_executeRequeteSql('SELECT * FROM dossiers INNER JOIN acheteur ON dossiers.idAcheteur = acheteur.idAcheteur INNER JOIN selection ON acheteur.idAcheteur = selection.idAcheteur INNER JOIN blocs ON selection.idBloc = blocs.idBloc INNER JOIN sites ON blocs.numeroTitreFoncier = sites.numeroTitreFoncier WHERE acheteur.idAcheteur = ?', [$Y_idAcheteur]);
 $dateNaisssance = date('d/m/Y', strtotime($Y_executeAcheteurDetail->dateNaisAcheteur));
-
+//var_dump($Y_idAcheteur);
 // 3. Afficher l'historique de transaction de l'acheteur
 $Y_executeHistoriqueTransaction = F_executeRequeteSql('SELECT * FROM transactions INNER JOIN versements ON transactions.idVersement = versements.idVersement WHERE idAcheteur = ?', [$Y_idAcheteur]);
 
@@ -55,7 +55,7 @@ if (isset($_POST['Enregistrer'])){
         [$montant, $idVersement]);
 
         // Redirection vers la page de détails de l'acheteur
-        header("Location: Y_acheteurDetailController.php?Y_idAcheteur=$Y_idAcheteur");
+        header("Location: Y_acheteurDetailController.php?H_idEmploye=".$_SESSION['H_idEmploye']."&Y_idAcheteur=".$Y_idAcheteur);
         exit;
     } else {
         $errorMessage = "Somme Total Atteint";
@@ -106,7 +106,7 @@ if (isset($_POST['telecharger'])) {
        echo "Erreur : " . $_FILES["photo"]["error"];
     }
     // Redirection vers la page de détails de l'acheteur
-    header("Location: Y_acheteurDetailController.php?Y_idAcheteur=$Y_idAcheteur");
+    header("Location: Y_acheteurDetailController.php?H_idEmploye=".$_SESSION['H_idEmploye']."&Y_idAcheteur=".$Y_idAcheteur);
     exit;
 }
 
@@ -116,7 +116,7 @@ if (isset($_POST['numeroCNI'])) {
     
     // stocker le chemein de la pièce d'identité dans une variable
     $_SESSION['cheminPieceIdentite'] = "../images/".$numeroCNI .".jpg";
-    header("Location: Y_acheteurDetailController.php?Y_idAcheteur=$Y_idAcheteur&voirPiece=1");
+    header("Location: Y_acheteurDetailController.php?H_idEmploye=".$_SESSION['H_idEmploye']."&Y_idAcheteur=".$Y_idAcheteur."&voirPiece=1");
     exit;
 
 }
