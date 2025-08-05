@@ -73,9 +73,9 @@ function displayItems(items, wrapper, rowsPerPage, page) {
                         <button type="button" class="btn btn-outline-success btn-sm">
                             <i class="bi bi-folder"></i> Dossier
                         </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <a href="H_updateAcheterController.php?H_idEmploye=${item.idEmploye || ''}&Y_idAcheteur=${item.idAcheteur || ''}" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-pencil"></i> Modifier
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

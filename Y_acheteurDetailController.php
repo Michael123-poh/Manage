@@ -32,6 +32,7 @@ $pourcentage = $total > 0 ? round(($paye / $total) * 100) : 0;
 
 // 6. Enregistrer un nouveau paiement
 if (isset($_POST['Enregistrer'])){
+    $_SESSION['H_idAcheteur'] = $Y_idAcheteur;
     extract($_POST);
 
     // Verifier si le montant Total est egale au montant verse

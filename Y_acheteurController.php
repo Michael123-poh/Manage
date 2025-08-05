@@ -22,7 +22,6 @@ if (!is_array($Y_executeAcheteurs) && !($Y_executeAcheteurs instanceof Traversab
 $json_items = json_encode($Y_executeAcheteurs);
 
 // 3. Sélection des autres données (blocs, sites, employés)
-// Ces données sont généralement moins nombreuses et peuvent être passées directement comme avant
 $H_executeBloc = F_executeRequeteSql("SELECT * FROM blocs ");
 $H_executeSites = F_executeRequeteSql("SELECT * FROM sites");
 $H_executeEmployes = F_executeRequeteSql("SELECT nomEmploye FROM employe");
